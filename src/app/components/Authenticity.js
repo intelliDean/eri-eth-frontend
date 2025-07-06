@@ -17,9 +17,6 @@ import {AUTHENTICITY_ABI} from '../resources/authenticity_abi';
 
 export default function Authenticity() {
 
-    const [provider, setProvider] = useState(null);
-    const [signer, setSigner] = useState(null);
-    const [account, setAccount] = useState(null);
     const [rContract, setRContract] = useState(null);
     const [sContract, setSContract] = useState(null);
     const [formVisible, setFormVisible] = useState("");
@@ -32,7 +29,6 @@ export default function Authenticity() {
     const [signature, setSignature] = useState("");
     const [veriSignature, setVeriSignature] = useState("");
     const [qrCodeData, setQrCodeData] = useState("");
-    const [chainId, setChainId] = useState("");
     const [veriResult, setVeriResult] = useState({});
     const [certificate, setCertificate] = useState({
         name: "iPhone 12",
@@ -43,18 +39,44 @@ export default function Authenticity() {
         metadata: "BLACK, 128GB",
     });
 
-    useEffect(() => {
+    const [provider, setProvider] = useState(null);
+    const [signer, setSigner] = useState(null);
+    const [account, setAccount] = useState(null);
+    const [chainId, setChainId] = useState("");
 
+    useEffect(() => {
         if (typeof window.ethereum !== "undefined") {
             const web3Provider = new ethers.BrowserProvider(window.ethereum)
             setProvider(web3Provider);
             setRContract(new ethers.Contract(AUTHENTICITY, AUTHENTICITY_ABI, web3Provider));
+            
+            // Check if already connected
+            checkConnection();
         } else {
             setProvider(ethers.getDefaultProvider);
             toast.error("Please install MetaMask!");
         }
     }, []);
 
+    const checkConnection = async () => {
+        if (typeof window.ethereum !== "undefined") {
+            try {
+                const accounts = await window.ethereum.request({ method: "eth_accounts" });
+                if (accounts.length > 0) {
+                    const web3Provider = new ethers.BrowserProvider(window.ethereum);
+                    const signer = await web3Provider.getSigner();
+                    const network = await web3Provider.getNetwork();
+                    
+                    setAccount(accounts[0]);
+                    setSigner(signer);
+                    setChainId(network.chainId);
+                    setSContract(new ethers.Contract(AUTHENTICITY, AUTHENTICITY_ABI, signer));
+                }
+            } catch (error) {
+                console.error("Error checking connection:", error);
+            }
+        }
+    };
 
     const connectWallet = async () => {
         if (!provider) {
@@ -380,28 +402,25 @@ export default function Authenticity() {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 to-teal-100">
-            <header className="p-4 bg-blue-600 text-white shadow-md">
-                <div className="container mx-auto flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">Authenticity Operations</h1>
-                    <button
-                        onClick={connectWallet}
-                        className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
-                    >
-                        {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}
-                    </button>
-                </div>
-            </header>
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="bg-white rounded-xl shadow-sm p-6 border">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Authenticity</h1>
+                <p className="text-gray-600">Verify product authenticity using blockchain technology and cryptographic signatures.</p>
+            </div>
 
-            <main className="container mx-auto p-6 space-y-8">
+            <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4 text-blue-800">Manufacturer Operations</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                            <span className="mr-2">🏭</span>
+                            Manufacturer Operations
+                        </h2>
                         <div className="space-y-4">
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "register" ? "" : "register")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center"
                                 >
                                     {formVisible === "register" ? "Hide" : "Register Manufacturer"}
                                 </button>
@@ -412,11 +431,11 @@ export default function Authenticity() {
                                             placeholder="Manufacturer Name"
                                             value={manufacturerName}
                                             onChange={(e) => setManufacturerName(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -426,7 +445,7 @@ export default function Authenticity() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "byName" ? "" : "byName")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "byName" ? "Hide" : "Get Manufacturer by Name"}
                                 </button>
@@ -437,16 +456,18 @@ export default function Authenticity() {
                                             placeholder="Manufacturer Name"
                                             value={queryName}
                                             onChange={(e) => setQueryName(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
                                         {manufacturerAddress && (
-                                            <p className="mt-2 text-gray-700">{manufacturerAddress}</p>
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{manufacturerAddress}</p>
+                                            </div>
                                         )}
                                     </form>
                                 )}
@@ -454,7 +475,7 @@ export default function Authenticity() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "byAddress" ? "" : "byAddress")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white cursor-pointer font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "byAddress" ? "Hide" : "Get Manufacturer by Address"}
                                 </button>
@@ -465,16 +486,18 @@ export default function Authenticity() {
                                             placeholder="Manufacturer Address"
                                             value={queryAddress}
                                             onChange={(e) => setQueryAddress(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
                                         {manufacturerDetails && (
-                                            <p className="mt-2 text-gray-700">{manufacturerDetails}</p>
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{manufacturerDetails}</p>
+                                            </div>
                                         )}
                                     </form>
                                 )}
@@ -482,13 +505,16 @@ export default function Authenticity() {
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4 text-blue-800">Certificate Operations</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                            <span className="mr-2">📜</span>
+                            Certificate Operations
+                        </h2>
                         <div className="space-y-4">
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "verify" ? "" : "verify")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "verify" ? "Hide" : "Verify Signature"}
                                 </button>
@@ -499,7 +525,7 @@ export default function Authenticity() {
                                             placeholder="Certificate Name"
                                             value={certificate.name}
                                             onChange={(e) => setCertificate({...certificate, name: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required
                                         />
                                         <input
@@ -510,7 +536,7 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 uniqueId: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required
                                         />
                                         <input
@@ -521,79 +547,50 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 serial: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required
                                         />
-                                        {/*<input*/}
-                                        {/*    type="number"*/}
-                                        {/*    placeholder="Date (Unix timestamp)"*/}
-                                        {/*    value={certificate.date}*/}
-                                        {/*    onChange={(e) => setCertificate({...certificate, date: e.target.value})}*/}
-                                        {/*    className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"*/}
-                                        {/*    required*/}
-                                        {/*/>*/}
                                         <input
                                             type="text"
                                             placeholder="Metadata (comma-separated)"
                                             value={certificate.metadata}
                                             onChange={(e) => setCertificate({...certificate, metadata: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
                                         {signatureResult &&
-                                            <p className="mt-2 text-gray-700 cursor-pointer">{signatureResult}</p>}
+                                            <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                                                <p className="text-green-700 text-sm">{signatureResult}</p>
+                                            </div>
+                                        }
 
-                                        {/*QRCODE GENERATION*/}
-
-                                        {/*{qrCodeData && (*/}
-                                        {/*    <div className="mt-4 flex flex-col items-center">*/}
-                                        {/*        <h3 className="text-lg font-semibold text-blue-800">Certificate QR*/}
-                                        {/*            Code</h3>*/}
-                                        {/*        <QRCodeCanvas value={qrCodeData} size={300}/>*/}
-                                        {/*        <p className="mt-2 text-sm text-gray-600">Scan to verify your*/}
-                                        {/*            product*/}
-                                        {/*            authenticity</p>*/}
-                                        {/*    </div> {qrCodeData && (*/}
-                                        {/*        <div className="mt-4 flex flex-col items-center">*/}
-                                        {/*            <h3 className="text-lg font-semibold text-blue-800">Certificate QR*/}
-                                        {/*                Code</h3>*/}
-                                        {/*            <QRCodeCanvas value={qrCodeData} size={300}/>*/}
-                                        {/*            <p className="mt-2 text-sm text-gray-600">Scan to verify your*/}
-                                        {/*                product*/}
-                                        {/*                authenticity</p>*/}
-                                        {/*        </div>*/}
-                                        {/*    )}*/}
-                                        {/*    <button*/}
-                                        {/*        onClick={() => {*/}
-                                        {/*            const canvas = document.querySelector("canvas");*/}
-                                        {/*            const link = document.createElement("a");*/}
-                                        {/*            link.href = canvas.toDataURL("image/png");*/}
-                                        {/*            link.download = "certificate-qr.png";*/}
-                                        {/*            link.click();*/}
-                                        {/*        }}*/}
-                                        {/*        className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-lg"*/}
-                                        {/*    >*/}
-                                        {/*        Download QR Code*/}
-                                        {/*    </button>*/}
-                                        {/*)}*/}
-                                        <button
-                                            onClick={() => {
-                                                const canvas = document.querySelector("canvas");
-                                                const link = document.createElement("a");
-                                                link.href = canvas.toDataURL("image/png");
-                                                link.download = "certificate-qr.png";
-                                                link.click();
-                                            }}
-                                            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-lg"
-                                        >
-                                            Download QR Code
-                                        </button>
+                                        {qrCodeData && (
+                                            <div className="mt-4 p-4 bg-gray-50 rounded-lg border text-center">
+                                                <h3 className="text-lg font-semibold text-gray-800 mb-3">Certificate QR Code</h3>
+                                                <div className="flex justify-center mb-3">
+                                                    <QRCodeCanvas value={qrCodeData} size={200} />
+                                                </div>
+                                                <p className="text-sm text-gray-600 mb-3">Scan to verify product authenticity</p>
+                                                <button
+                                                    onClick={() => {
+                                                        const canvas = document.querySelector("canvas");
+                                                        const link = document.createElement("a");
+                                                        link.href = canvas.toDataURL("image/png");
+                                                        link.download = "certificate-qr.png";
+                                                        link.click();
+                                                    }}
+                                                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300"
+                                                >
+                                                    Download QR Code
+                                                </button>
+                                            </div>
+                                        )}
                                     </form>
                                 )}
                             </div>
@@ -601,7 +598,7 @@ export default function Authenticity() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "claim" ? "" : "claim")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "claim" ? "Hide" : "Claim Ownership"}
                                 </button>
@@ -612,7 +609,7 @@ export default function Authenticity() {
                                             placeholder="Certificate Name"
                                             value={certificate.name}
                                             onChange={(e) => setCertificate({...certificate, name: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
@@ -622,7 +619,7 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 uniqueId: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
@@ -632,14 +629,14 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 serial: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="number"
                                             placeholder="Date (Unix timestamp)"
                                             value={certificate.date}
                                             onChange={(e) => setCertificate({...certificate, date: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
@@ -649,25 +646,25 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 owner: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Metadata (comma-separated)"
                                             value={certificate.metadata}
                                             onChange={(e) => setCertificate({...certificate, metadata: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Signature"
                                             value={veriSignature}
                                             onChange={(e) => setVeriSignature(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -678,7 +675,7 @@ export default function Authenticity() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "verifyAuth" ? "" : "verifyAuth")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "verifyAuth" ? "Hide" : "Verify Authenticity"}
                                 </button>
@@ -689,7 +686,7 @@ export default function Authenticity() {
                                             placeholder="Certificate Name"
                                             value={certificate.name}
                                             onChange={(e) => setCertificate({...certificate, name: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
@@ -699,7 +696,7 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 uniqueId: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
@@ -709,14 +706,14 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 serial: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="number"
                                             placeholder="Date (Unix timestamp)"
                                             value={certificate.date}
                                             onChange={(e) => setCertificate({...certificate, date: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
@@ -726,235 +723,49 @@ export default function Authenticity() {
                                                 ...certificate,
                                                 owner: e.target.value
                                             })}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Metadata (comma-separated)"
                                             value={certificate.metadata}
                                             onChange={(e) => setCertificate({...certificate, metadata: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Signature"
                                             value={veriSignature}
                                             onChange={(e) => setVeriSignature(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
                                         {veriResult && (
-                                            <ul className="mt-2 text-gray-700">
-                                                {
-                                                    <li>
-                                                        <p> Name: {veriResult.name}</p>
-                                                        <p> ID: {veriResult.uniqueId}</p>
-                                                        <p> Serial: {veriResult.serial}</p>
-                                                        <p> Date: {veriResult.date}</p>
-                                                        <p> Owner: {veriResult.owner}</p>
-                                                        <p> Metadata: {veriResult.metadata}</p>
-                                                        <p> Manufacturer: {veriResult.manufacturer}</p>
-                                                    </li>
-                                                }
-                                            </ul>
+                                            <div className="mt-3 p-4 bg-green-50 rounded-lg border border-green-200">
+                                                <h4 className="font-semibold text-green-800 mb-2">Verification Result</h4>
+                                                <div className="space-y-1 text-sm text-green-700">
+                                                    <p><span className="font-medium">Name:</span> {veriResult.name}</p>
+                                                    <p><span className="font-medium">ID:</span> {veriResult.uniqueId}</p>
+                                                    <p><span className="font-medium">Serial:</span> {veriResult.serial}</p>
+                                                    <p><span className="font-medium">Date:</span> {veriResult.date}</p>
+                                                    <p><span className="font-medium">Owner:</span> {veriResult.owner}</p>
+                                                    <p><span className="font-medium">Metadata:</span> {veriResult.metadata}</p>
+                                                    <p><span className="font-medium">Manufacturer:</span> {veriResult.manufacturer}</p>
+                                                </div>
+                                            </div>
                                         )}
-
                                     </form>
                                 )}
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false}/>
+            </div>
         </div>
     );
 }
-
-
-//
-//     const handleInputChange = (e) => {
-//         const {name, value} = e.target;
-//         if (name === 'metadata') {
-//             setFormData({...formData, [name]: value.split(',').map(s => s.trim())});
-//         } else {
-//             setFormData({...formData, [name]: value});
-//         }
-//         setError('');
-//     };
-//
-//
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         setResult('');
-//         setError('');
-//         setIsSubmitting(true);
-//
-//         try {
-//             // const provider = new ethers.BrowserProvider(window.ethereum);
-//             const signer = await provider.getSigner();
-//             const userAddress = await signer.getAddress();
-//
-//             //making sure the wallet making this call is the same wallet that connect at the begining
-//             // if (userAddress.toLowerCase() !== manufacturerAddress.toLowerCase()) {
-//             //     setError('Connected wallet does not match manufacturer address');
-//             //     setIsSubmitting(false);
-//             //     return;
-//             // }
-//
-//             let date = Math.floor(Date.now() / 1000).toString();
-//             console.log("Int Date: ", date);
-//
-//             console.log("Manufacturer Address: ", manufacturerAddress);
-//
-//             const certificateData = {
-//                 name: formData.name,
-//                 unique_id: formData.uniqueId,
-//                 serial: formData.serial,
-//                 date: parseInt(date),
-//                 owner: userAddress, //this owner should be made dynamic and not static like this
-//                 metadata: formData.metadata,
-//             };
-//
-//             const response = await axios.post('http://localhost:8080/create_certificate', certificateData);
-//
-//             console.log("Response: ", response);
-//
-//             const {domain, types, value} = response.data;
-//
-//             console.log('EIP-712 domain:', domain);
-//             console.log('EIP-712 value:', value);
-//             console.log('EIP-712 types:', types);
-//
-//             const signature = await signer.signTypedData(domain, types, value);
-//
-//             // Debug: Recover signer
-//             const digest = ethers.TypedDataEncoder.hash(domain, types, value);
-//             const recoveredSigner = ethers.recoverAddress(digest, signature);
-//             console.log('Recovered signer:', recoveredSigner, 'Expected:', manufacturerAddress);
-//
-//             console.log("Signer: ", signer);
-//             console.log('Signature:', signature);
-//
-//             let ethDate = ethers.toBigInt(date);
-//
-//             console.log("Eth Date: ", ethDate);
-//
-//             const certificate = {
-//                 name: value.name,
-//                 uniqueId: value.uniqueId,
-//                 serial: value.serial,
-//                 date: ethDate,
-//                 owner: value.owner, //this owner should be made dynamic and not static like this
-//                 metadata: value.metadata,
-//             };
-//
-//             console.log('Certificate:', certificate);
-//
-//             // const contract = new ethers.Contract(AUTHENTICITY, AUTHENTICITY_ABI, signer);
-//
-//             // console.log('Contract:', contract);
-//
-//             console.log('Calling verifySignature with:', {certificate, signature});
-//
-//             const result = await sContract.verifySignature(certificate, signature);
-//
-//             console.log('Verification result:', result);
-//
-//             setResult(`Signature is ${result ? 'valid' : 'invalid'} for certificate: ${formData.name}`);
-//
-//         } catch (err) {
-//             console.error('Error:', err);
-//             setError(err.message || 'Failed to verify signature');
-//         } finally {
-//             setIsSubmitting(false);
-//         }
-//     };
-//
-//     return (
-//         <div className="flex flex-col items-center min-h-screen p-8 bg-gray-100 dark:bg-gray-900">
-//             <header className="p-4 bg-blue-600 text-white shadow-md">
-//                 <div className="container mx-auto flex justify-between items-center">
-//                     <h1 className="text-2xl font-bold">Authenticity & Ownership</h1>
-//                     <button
-//                         onClick={connectWallet}
-//                         className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
-//                     >
-//                         {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}
-//                     </button>
-//                 </div>
-//             </header>
-//             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">ERI</h2>
-//             <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-//                         Product Name:
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="name"
-//                         value={formData.name}
-//                         onChange={handleInputChange}
-//                         className="w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-//                         required
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-//                         Product ID:
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="uniqueId"
-//                         value={formData.uniqueId}
-//                         onChange={handleInputChange}
-//                         className="w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-//                         required
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-//                         Serial Number:
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="serial"
-//                         value={formData.serial}
-//                         onChange={handleInputChange}
-//                         className="w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-//                         required
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-//                         Product Metadata (comma-separated):
-//                     </label>
-//                     <textarea
-//                         name="metadata"
-//                         value={formData.metadata.join(',')}
-//                         onChange={handleInputChange}
-//                         className="w-full p-2 border rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white min-h-[80px]"
-//                     />
-//                 </div>
-//                 <button
-//                     type="submit"
-//                     // disabled={isSubmitting || !isConnected}
-//                     className={`w-full p-3 rounded-md text-white font-medium ${
-//                         isSubmitting || !isConnected
-//                             ? 'bg-gray-400 cursor-not-allowed'
-//                             : 'bg-blue-600 hover:bg-blue-700'
-//                     }`}
-//                 >
-//                     {isSubmitting ? 'Processing...' : 'Sign and Verify'}
-//                 </button>
-//             </form>
-//             {result && <p className="mt-4 text-green-600">{result}</p>}
-//             {error && <p className="mt-4 text-red-600">{error}</p>}
-//         </div>
-//     );
-// }

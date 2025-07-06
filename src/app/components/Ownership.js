@@ -13,9 +13,6 @@ const OWNERSHIP = process.env.NEXT_PUBLIC_OWNERSHIP;
 
 export default function Ownership() {
 
-    const [provider, setProvider] = useState(null);
-    const [signer, setSigner] = useState(null);
-    const [account, setAccount] = useState(null);
     const [rContract, setRContract] = useState(null);
     const [sContract, setSContract] = useState(null);
     const [formVisible, setFormVisible] = useState("");
@@ -44,18 +41,42 @@ export default function Ownership() {
         owner: "",
         metadata: "BLACK,128GB",
     });
-    useEffect(() => {
 
+    const [provider, setProvider] = useState(null);
+    const [signer, setSigner] = useState(null);
+    const [account, setAccount] = useState(null);
+
+    useEffect(() => {
         if (typeof window.ethereum !== "undefined") {
             const web3Provider = new ethers.BrowserProvider(window.ethereum)
             setProvider(web3Provider);
             setRContract(new ethers.Contract(OWNERSHIP, OWNERSHIP_ABI, web3Provider));
+            
+            // Check if already connected
+            checkConnection();
         } else {
             setProvider(ethers.getDefaultProvider);
             toast.error("Please install MetaMask!");
         }
     }, []);
 
+    const checkConnection = async () => {
+        if (typeof window.ethereum !== "undefined") {
+            try {
+                const accounts = await window.ethereum.request({ method: "eth_accounts" });
+                if (accounts.length > 0) {
+                    const web3Provider = new ethers.BrowserProvider(window.ethereum);
+                    const signer = await web3Provider.getSigner();
+                    
+                    setAccount(accounts[0]);
+                    setSigner(signer);
+                    setSContract(new ethers.Contract(OWNERSHIP, OWNERSHIP_ABI, signer));
+                }
+            } catch (error) {
+                console.error("Error checking connection:", error);
+            }
+        }
+    };
 
     const connectWallet = async () => {
         if (!provider) {
@@ -412,28 +433,25 @@ export default function Ownership() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 to-teal-100">
-            <header className="p-4 bg-blue-600 text-white shadow-md">
-                <div className="container mx-auto flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">Ownership Management</h1>
-                    <button
-                        onClick={connectWallet}
-                        className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
-                    >
-                        {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}
-                    </button>
-                </div>
-            </header>
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="bg-white rounded-xl shadow-sm p-6 border">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Ownership Management</h1>
+                <p className="text-gray-600">Manage product ownership, transfers, and verification on the blockchain.</p>
+            </div>
 
-            <main className="container mx-auto p-6 space-y-8">
+            <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4 text-blue-800">User Operations</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                            <span className="mr-2">👤</span>
+                            User Operations
+                        </h2>
                         <div className="space-y-4">
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "register" ? "" : "register")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "register" ? "Hide" : "Register User"}
                                 </button>
@@ -444,11 +462,11 @@ export default function Ownership() {
                                             placeholder="Username (min 3 characters)"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -459,7 +477,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "setAuth" ? "" : "setAuth")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "setAuth" ? "Hide" : "Owner Set Authenticity"}
                                 </button>
@@ -470,11 +488,11 @@ export default function Ownership() {
                                             placeholder="Authencity Address"
                                             value={authe}
                                             onChange={(e) => setAuthe(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -485,7 +503,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "getUser" ? "" : "getUser")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "getUser" ? "Hide" : "Get User by Address"}
                                 </button>
@@ -496,28 +514,35 @@ export default function Ownership() {
                                             placeholder="User Address"
                                             value={queryAddress}
                                             onChange={(e) => setQueryAddress(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
-                                        {userDetails && <p className="mt-2 text-gray-700">{userDetails}</p>}
+                                        {userDetails && (
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{userDetails}</p>
+                                            </div>
+                                        )}
                                     </form>
                                 )}
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4 text-blue-800">Item Operations</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                            <span className="mr-2">📦</span>
+                            Item Operations
+                        </h2>
                         <div className="space-y-4">
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "create" ? "" : "create")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "create" ? "Hide" : "Create Item"}
                                 </button>
@@ -528,46 +553,46 @@ export default function Ownership() {
                                             placeholder="Item Name"
                                             value={certificate.name}
                                             onChange={(e) => setCertificate({...certificate, name: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Unique ID"
                                             value={certificate.uniqueId}
                                             onChange={(e) => setCertificate({...certificate, uniqueId: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Serial"
                                             value={certificate.serial}
                                             onChange={(e) => setCertificate({...certificate, serial: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="number"
                                             placeholder="Date (Unix timestamp)"
                                             value={certificate.date}
                                             onChange={(e) => setCertificate({...certificate, date: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Owner Address"
                                             value={certificate.owner}
                                             onChange={(e) => setCertificate({...certificate, owner: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Metadata (comma-separated)"
                                             value={certificate.metadata}
                                             onChange={(e) => setCertificate({...certificate, metadata: e.target.value})}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -577,37 +602,32 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "getItems" ? "" : "getItems")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "getItems" ? "Hide" : "Get All Items"}
                                 </button>
                                 {formVisible === "getItems" && (
                                     <form onSubmit={getAllItems} className="space-y-4 mt-4">
-                                        {/*<input*/}
-                                        {/*    type="text"*/}
-                                        {/*    placeholder="User Address"*/}
-                                        {/*    value={queryAddress}*/}
-                                        {/*    onChange={(e) => setQueryAddress(e.target.value)}*/}
-                                        {/*    className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"*/}
-                                        {/*/>*/}
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
                                         
                                         {itemsList.length > 0 && (
-                                            <ul className="mt-2 text-gray-700">
+                                            <div className="mt-4 space-y-3">
                                                 {itemsList.map((item, index) => (
-                                                    <li key={index}>
-                                                        <p>ID: {item.itemId},</p>
-                                                        <p>Name: {item.name},</p>
-                                                        <p> Date: {item.date},</p>
-                                                        <p> Metadata: {item.metadata}</p>
-                                                    </li>
+                                                    <div key={index} className="p-3 bg-gray-50 rounded-lg border">
+                                                        <div className="space-y-1 text-sm text-gray-700">
+                                                            <p><span className="font-medium">ID:</span> {item.itemId}</p>
+                                                            <p><span className="font-medium">Name:</span> {item.name}</p>
+                                                            <p><span className="font-medium">Date:</span> {item.date}</p>
+                                                            <p><span className="font-medium">Metadata:</span> {item.metadata}</p>
+                                                        </div>
+                                                    </div>
                                                 ))}
-                                            </ul>
+                                            </div>
                                         )}
                                     </form>
                                 )}
@@ -615,7 +635,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "getItem" ? "" : "getItem")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "getItem" ? "Hide" : "Get Item by ID"}
                                 </button>
@@ -626,28 +646,35 @@ export default function Ownership() {
                                             placeholder="Item ID"
                                             value={queryItemId}
                                             onChange={(e) => setQueryItemId(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
-                                        {itemDetails && <p className="mt-2 text-gray-700">{itemDetails}</p>}
+                                        {itemDetails && (
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{itemDetails}</p>
+                                            </div>
+                                        )}
                                     </form>
                                 )}
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4 text-blue-800">Ownership Transfer</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                            <span className="mr-2">🔄</span>
+                            Ownership Transfer
+                        </h2>
                         <div className="space-y-4">
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "generateCode" ? "" : "generateCode")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "generateCode" ? "Hide" : "Generate Ownership Code"}
                                 </button>
@@ -658,22 +685,26 @@ export default function Ownership() {
                                             placeholder="Item ID"
                                             value={queryItemId}
                                             onChange={(e) => setQueryItemId(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Temporary Owner Address"
                                             value={tempOwnerAddress}
                                             onChange={(e) => setTempOwnerAddress(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
-                                        {ownershipCode && <p className="mt-2 text-gray-700">{ownershipCode}</p>}
+                                        {ownershipCode && (
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{ownershipCode}</p>
+                                            </div>
+                                        )}
                                     </form>
                                 )}
                             </div>
@@ -681,7 +712,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "isOwner" ? "" : "isOwner")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "isOwner" ? "Hide" : "Is Owner"}
                                 </button>
@@ -692,23 +723,27 @@ export default function Ownership() {
                                             placeholder="Owner Address"
                                             value={userAddress}
                                             onChange={(e) => setUserAddress(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Item ID"
                                             value={queryItemId}
                                             onChange={(e) => setQueryItemId(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
 
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
-                                        {isOwn && <p className="mt-2 text-gray-700">{isOwn}</p>}
+                                        {isOwn && (
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{isOwn}</p>
+                                            </div>
+                                        )}
                                     </form>
                                 )}
                             </div>
@@ -716,7 +751,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "verify" ? "" : "verify")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "verify" ? "Hide" : "Verify Ownership"}
                                 </button>
@@ -727,25 +762,24 @@ export default function Ownership() {
                                             placeholder="Item ID"
                                             value={queryItemId}
                                             onChange={(e) => setQueryItemId(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
                                         {owner && (
-                                            <ul className="mt-2 text-gray-700">
-                                                {
-                                                    <li>
-                                                        <p> Item Name: {owner.name},</p>
-                                                        <p>Item ID: {owner.itemId},</p>
-                                                        <p>Owner Name: {owner.username},</p>
-                                                        <p>Owner Address: {owner.owner}</p>
-                                                    </li>
-                                                }
-                                            </ul>
+                                            <div className="mt-3 p-4 bg-green-50 rounded-lg border border-green-200">
+                                                <h4 className="font-semibold text-green-800 mb-2">Ownership Verification</h4>
+                                                <div className="space-y-1 text-sm text-green-700">
+                                                    <p><span className="font-medium">Item Name:</span> {owner.name}</p>
+                                                    <p><span className="font-medium">Item ID:</span> {owner.itemId}</p>
+                                                    <p><span className="font-medium">Owner Name:</span> {owner.username}</p>
+                                                    <p><span className="font-medium">Owner Address:</span> {owner.owner}</p>
+                                                </div>
+                                            </div>
                                         )}
                                     </form>
                                 )}
@@ -755,7 +789,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "tempOwner" ? "" : "tempOwner")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "tempOwner" ? "Hide" : "Get Temp Owner"}
                                 </button>
@@ -766,15 +800,19 @@ export default function Ownership() {
                                             placeholder="Ownership Code (bytes32)"
                                             value={queryItemHash}
                                             onChange={(e) => setQueryItemHash(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
-                                        {temOwner && <p className="mt-2 text-gray-700">{temOwner}</p>}
+                                        {temOwner && (
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                                <p className="text-gray-700 text-sm">{temOwner}</p>
+                                            </div>
+                                        )}
                                     </form>
                                 )}
                             </div>
@@ -783,7 +821,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "claimOwnership" ? "" : "claimOwnership")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "claimOwnership" ? "Hide" : "Claim Ownership"}
                                 </button>
@@ -794,11 +832,11 @@ export default function Ownership() {
                                             placeholder="Ownership Code (bytes32)"
                                             value={claimCode}
                                             onChange={(e) => setClaimCode(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -808,7 +846,7 @@ export default function Ownership() {
                             <div>
                                 <button
                                     onClick={() => setFormVisible(formVisible === "revokeCode" ? "" : "revokeCode")}
-                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                 >
                                     {formVisible === "revokeCode" ? "Hide" : "Revoke Ownership Code"}
                                 </button>
@@ -819,11 +857,11 @@ export default function Ownership() {
                                             placeholder="Ownership Code (bytes32)"
                                             value={revokeCode}
                                             onChange={(e) => setRevokeCode(e.target.value)}
-                                            className="w-full p-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
                                             type="submit"
-                                            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+                                            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
                                         >
                                             Submit
                                         </button>
@@ -833,8 +871,7 @@ export default function Ownership() {
                         </div>
                     </div>
                 </div>
-            </main>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false}/>
+            </div>
         </div>
     );
 }
