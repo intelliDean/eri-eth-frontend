@@ -1,4 +1,4 @@
-// src/app/components/Authenticity.js
+
 "use client"; // Required for client-side interactivity in Next.js App Router
 
 import React, {useState, useEffect} from 'react';
