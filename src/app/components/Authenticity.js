@@ -548,6 +548,7 @@ export default function Authenticity() {
                                         </button>
                                         {signatureResult &&
                                             <p className="mt-2 text-gray-700 cursor-pointer">{signatureResult}</p>}
+                                        }
 
                                         {/*QRCODE GENERATION*/}
 
