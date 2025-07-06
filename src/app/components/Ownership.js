@@ -108,7 +108,7 @@ export default function Ownership() {
         }
     };
 
-    const checkConnection = () => {
+    const validateWalletConnection = () => {
         if (!account) {
             toast.error("Connect wallet!");
             return false;
@@ -117,7 +117,7 @@ export default function Ownership() {
     };
     const registerUser = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !sContract) return;
+        if (!validateWalletConnection() || !sContract) return;
         try {
             if (!username || username.length < 3) {
                 throw new Error("Username must be at least 3 characters");
@@ -137,7 +137,7 @@ export default function Ownership() {
 
     const getUser = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !rContract) return;
+        if (!validateWalletConnection() || !rContract) return;
         try {
             if (!ethers.isAddress(queryAddress)) {
                 throw new Error("Valid address required");
@@ -159,7 +159,7 @@ export default function Ownership() {
 
     const createItem = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !sContract) return;
+        if (!validateWalletConnection() || !sContract) return;
         try {
             if (
                 !certificate.name ||
@@ -215,7 +215,7 @@ export default function Ownership() {
 
     const getAllItems = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !sContract) return;
+        if (!validateWalletConnection() || !sContract) return;
         try {
             // if (!ethers.isAddress(queryAddress)) throw new Error("Valid address required");
 
@@ -239,7 +239,7 @@ export default function Ownership() {
 
     const getItem = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !rContract) return;
+        if (!validateWalletConnection() || !rContract) return;
         try {
             if (!queryItemId) throw new Error("Item ID required");
             const item = await rContract.getItem(queryItemId);
@@ -256,7 +256,7 @@ export default function Ownership() {
 
     const generateChangeOfOwnershipCode = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !sContract) return;
+        if (!validateWalletConnection() || !sContract) return;
         try {
             if (!queryItemId) {
                 throw new Error("Item ID required");
@@ -286,7 +286,7 @@ export default function Ownership() {
 
     const newOwnerClaimOwnership = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !sContract) return;
+        if (!validateWalletConnection() || !sContract) return;
         try {
             if (!claimCode || !ethers.isBytesLike(claimCode)) {
                 throw new Error("Valid ownership code required");
@@ -309,7 +309,7 @@ export default function Ownership() {
 
     const revokeChangeOwnershipCode = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !sContract) return;
+        if (!validateWalletConnection() || !sContract) return;
         try {
             if (!revokeCode || !ethers.isBytesLike(revokeCode)) {
                 throw new Error("Valid ownership code required");
@@ -334,7 +334,7 @@ export default function Ownership() {
 
     const getTempOwner = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !rContract) return;
+        if (!validateWalletConnection() || !rContract) return;
         try {
 
             if (!queryItemHash || !ethers.isBytesLike(queryItemHash)) {
@@ -359,7 +359,7 @@ export default function Ownership() {
 
     const verifyOwnership = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !rContract) return;
+        if (!validateWalletConnection() || !rContract) return;
         try {
 
             if (!queryItemId) {
@@ -388,7 +388,7 @@ export default function Ownership() {
 
     const isOwner = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !rContract) return;
+        if (!validateWalletConnection() || !rContract) return;
         try {
 
             if (!queryItemId || !userAddress) {
@@ -411,7 +411,7 @@ export default function Ownership() {
 
     const setAuthenticity = async (e) => {
         e.preventDefault();
-        if (!checkConnection() || !rContract) return;
+        if (!validateWalletConnection() || !rContract) return;
         try {
 
             if (!authe || !ethers.isAddress(authe)) {
