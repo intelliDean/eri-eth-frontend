@@ -500,7 +500,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Username (min 3 characters)"
                                             value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setUsername(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -526,7 +529,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Authencity Address"
                                             value={authe}
-                                            onChange={(e) => setAuthe(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setAuthe(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -552,7 +558,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="User Address"
                                             value={queryAddress}
-                                            onChange={(e) => setQueryAddress(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setQueryAddress(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -591,42 +600,60 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Item Name"
                                             value={certificate.name}
-                                            onChange={(e) => setCertificate({...certificate, name: e.target.value})}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setCertificate({...certificate, name: value});
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Unique ID"
                                             value={certificate.uniqueId}
-                                            onChange={(e) => setCertificate({...certificate, uniqueId: e.target.value})}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setCertificate({...certificate, uniqueId: value});
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Serial"
                                             value={certificate.serial}
-                                            onChange={(e) => setCertificate({...certificate, serial: e.target.value})}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setCertificate({...certificate, serial: value});
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="number"
                                             placeholder="Date (Unix timestamp)"
                                             value={certificate.date}
-                                            onChange={(e) => setCertificate({...certificate, date: e.target.value})}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setCertificate({...certificate, date: value});
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Owner Address"
                                             value={certificate.owner}
-                                            onChange={(e) => setCertificate({...certificate, owner: e.target.value})}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setCertificate({...certificate, owner: value});
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Metadata (comma-separated)"
                                             value={certificate.metadata}
-                                            onChange={(e) => setCertificate({...certificate, metadata: e.target.value})}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setCertificate({...certificate, metadata: value});
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -684,7 +711,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Item ID"
                                             value={queryItemId}
-                                            onChange={(e) => setQueryItemId(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setQueryItemId(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -723,14 +753,20 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Item ID"
                                             value={queryItemId}
-                                            onChange={(e) => setQueryItemId(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setQueryItemId(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Temporary Owner Address"
                                             value={tempOwnerAddress}
-                                            onChange={(e) => setTempOwnerAddress(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setTempOwnerAddress(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -761,14 +797,20 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Owner Address"
                                             value={userAddress}
-                                            onChange={(e) => setUserAddress(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setUserAddress(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Item ID"
                                             value={queryItemId}
-                                            onChange={(e) => setQueryItemId(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setQueryItemId(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
 
@@ -800,7 +842,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Item ID"
                                             value={queryItemId}
-                                            onChange={(e) => setQueryItemId(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setQueryItemId(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -838,7 +883,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Ownership Code (bytes32)"
                                             value={queryItemHash}
-                                            onChange={(e) => setQueryItemHash(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setQueryItemHash(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -870,7 +918,10 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Ownership Code (bytes32)"
                                             value={claimCode}
-                                            onChange={(e) => setClaimCode(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setClaimCode(value);
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button
@@ -895,7 +946,9 @@ export default function Ownership() {
                                             type="text"
                                             placeholder="Ownership Code (bytes32)"
                                             value={revokeCode}
-                                            onChange={(e) => setRevokeCode(e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                            }}
                                             className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button

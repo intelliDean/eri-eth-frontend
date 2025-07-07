@@ -515,7 +515,10 @@ export default function Authenticity() {
                                 <Input
                                     placeholder="Manufacturer Name (min 2 characters)"
                                     value={manufacturer.name}
-                                    onChange={(e) => setManufacturer(prev => ({ ...prev, name: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setManufacturer(prev => ({ ...prev, name: value }));
+                                    }}
                                     required
                                 />
                                 <Button type="submit" variant="success">
@@ -538,7 +541,10 @@ export default function Authenticity() {
                                 <Input
                                     placeholder="Manufacturer Name"
                                     value={manufacturer.queryName}
-                                    onChange={(e) => setManufacturer(prev => ({ ...prev, queryName: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setManufacturer(prev => ({ ...prev, queryName: value }));
+                                    }}
                                     required
                                 />
                                 <Button type="submit" variant="success">
@@ -567,7 +573,10 @@ export default function Authenticity() {
                                 <Input
                                     placeholder="Manufacturer Address"
                                     value={manufacturer.queryAddress}
-                                    onChange={(e) => setManufacturer(prev => ({ ...prev, queryAddress: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setManufacturer(prev => ({ ...prev, queryAddress: value }));
+                                    }}
                                     required
                                 />
                                 <Button type="submit" variant="success">
@@ -600,25 +609,37 @@ export default function Authenticity() {
                                 <Input
                                     placeholder="Product Name"
                                     value={certificate.name}
-                                    onChange={(e) => setCertificate(prev => ({ ...prev, name: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setCertificate(prev => ({ ...prev, name: value }));
+                                    }}
                                     required
                                 />
                                 <Input
                                     placeholder="Unique ID (e.g., IMEI, Serial Number)"
                                     value={certificate.uniqueId}
-                                    onChange={(e) => setCertificate(prev => ({ ...prev, uniqueId: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setCertificate(prev => ({ ...prev, uniqueId: value }));
+                                    }}
                                     required
                                 />
                                 <Input
                                     placeholder="Serial Number"
                                     value={certificate.serial}
-                                    onChange={(e) => setCertificate(prev => ({ ...prev, serial: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setCertificate(prev => ({ ...prev, serial: value }));
+                                    }}
                                     required
                                 />
                                 <Input
                                     placeholder="Metadata (comma-separated: Color, Storage, Model)"
                                     value={certificate.metadata}
-                                    onChange={(e) => setCertificate(prev => ({ ...prev, metadata: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setCertificate(prev => ({ ...prev, metadata: value }));
+                                    }}
                                     required
                                 />
                                 <Button type="submit" variant="success">
@@ -675,7 +696,10 @@ export default function Authenticity() {
                                 <Input
                                     placeholder="Signature for verification"
                                     value={verification.signature}
-                                    onChange={(e) => setVerification(prev => ({ ...prev, signature: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setVerification(prev => ({ ...prev, signature: value }));
+                                    }}
                                     required
                                 />
                                 <Button type="submit" variant="success">
