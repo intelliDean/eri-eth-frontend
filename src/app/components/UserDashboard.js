@@ -424,7 +424,7 @@ export default function UserDashboard() {
             type={type}
             placeholder={placeholder}
             value={value}
-            onChange={onChange}
+            onChange={(e) => onChange(e)}
             required={required}
             className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white"
         />
@@ -434,7 +434,7 @@ export default function UserDashboard() {
         <textarea
             placeholder={placeholder}
             value={value}
-            onChange={onChange}
+            onChange={(e) => onChange(e)}
             rows={rows}
             className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white"
         />
@@ -695,7 +695,16 @@ export default function UserDashboard() {
                                 <TextArea
                                     placeholder="Paste certificate signature data (from QR code or manufacturer)"
                                     value={ownership.claimSignature}
-                                    onChange={(e) => setOwnership(prev => ({ ...prev, claimSignature: e.target.value }))}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setVerification(prev => ({ ...prev, signature: value }));
+                                    }}
+                                        const value = e.target.value;
+                                        setOwnership(prev => ({ ...prev, claimSignature: value }));
+                                    }}
+                                        const value = e.target.value;
+                                        setUser(prev => ({ ...prev, username: value }));
+                                    }}
                                     rows={6}
                                 />
                             </div>
@@ -795,7 +804,10 @@ export default function UserDashboard() {
                                     </label>
                                     <select
                                         value={ownership.selectedItemId}
-                                        onChange={(e) => setOwnership(prev => ({ ...prev, selectedItemId: e.target.value }))}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setOwnership(prev => ({ ...prev, selectedItemId: value }));
+                                        }}
                                         className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white"
                                         required
                                     >
@@ -814,7 +826,10 @@ export default function UserDashboard() {
                                     <Input
                                         placeholder="0x... (Ethereum wallet address)"
                                         value={ownership.transferToAddress}
-                                        onChange={(e) => setOwnership(prev => ({ ...prev, transferToAddress: e.target.value }))}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setOwnership(prev => ({ ...prev, transferToAddress: value }));
+                                        }}
                                         required
                                     />
                                 </div>
@@ -852,7 +867,10 @@ export default function UserDashboard() {
                                     <Input
                                         placeholder="Enter transfer code received from current owner"
                                         value={ownership.transferCode}
-                                        onChange={(e) => setOwnership(prev => ({ ...prev, transferCode: e.target.value }))}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setOwnership(prev => ({ ...prev, transferCode: value }));
+                                        }}
                                         required
                                     />
                                 </div>

@@ -414,7 +414,7 @@ export default function ManufacturerDashboard() {
             type={type}
             placeholder={placeholder}
             value={value}
-            onChange={onChange}
+            onChange={(e) => onChange(e)}
             required={required}
             className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white"
         />
@@ -563,7 +563,10 @@ export default function ManufacturerDashboard() {
                                     <Input
                                         placeholder="Enter your company name (minimum 2 characters)"
                                         value={manufacturer.name}
-                                        onChange={(e) => setManufacturer(prev => ({ ...prev, name: e.target.value }))}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setManufacturer(prev => ({ ...prev, name: value }));
+                                        }}
                                         required
                                     />
                                     <p className="text-sm text-gray-500 mt-2">
@@ -597,7 +600,10 @@ export default function ManufacturerDashboard() {
                                         <Input
                                             placeholder="e.g., iPhone 15 Pro"
                                             value={productCertificate.name}
-                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, name: e.target.value }))}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setProductCertificate(prev => ({ ...prev, name: value }));
+                                            }}
                                             required
                                         />
                                     </div>
@@ -608,7 +614,10 @@ export default function ManufacturerDashboard() {
                                         <Input
                                             placeholder="IMEI, Serial Number, etc."
                                             value={productCertificate.uniqueId}
-                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, uniqueId: e.target.value }))}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setProductCertificate(prev => ({ ...prev, uniqueId: value }));
+                                            }}
                                             required
                                         />
                                     </div>
@@ -621,7 +630,10 @@ export default function ManufacturerDashboard() {
                                         <Input
                                             placeholder="Manufacturing serial number"
                                             value={productCertificate.serial}
-                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, serial: e.target.value }))}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setProductCertificate(prev => ({ ...prev, serial: value }));
+                                            }}
                                             required
                                         />
                                     </div>
@@ -632,7 +644,10 @@ export default function ManufacturerDashboard() {
                                         <Input
                                             placeholder="0x... (Ethereum wallet address)"
                                             value={productCertificate.owner}
-                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, owner: e.target.value }))}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setProductCertificate(prev => ({ ...prev, owner: value }));
+                                            }}
                                             required
                                         />
                                     </div>
@@ -644,7 +659,10 @@ export default function ManufacturerDashboard() {
                                     <Input
                                         placeholder="Color, Storage, Model (comma separated)"
                                         value={productCertificate.metadata}
-                                        onChange={(e) => setProductCertificate(prev => ({ ...prev, metadata: e.target.value }))}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setProductCertificate(prev => ({ ...prev, metadata: value }));
+                                        }}
                                         required
                                     />
                                     <p className="text-sm text-gray-500 mt-2">
@@ -718,29 +736,44 @@ export default function ManufacturerDashboard() {
                                         <Input
                                             placeholder="Product Name"
                                             value={product.name}
-                                            onChange={(e) => updateBatchProduct(index, 'name', e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                updateBatchProduct(index, 'name', value);
+                                            }}
                                         />
                                         <Input
                                             placeholder="Unique ID"
                                             value={product.uniqueId}
-                                            onChange={(e) => updateBatchProduct(index, 'uniqueId', e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                updateBatchProduct(index, 'uniqueId', value);
+                                            }}
                                         />
                                         <Input
                                             placeholder="Serial Number"
                                             value={product.serial}
-                                            onChange={(e) => updateBatchProduct(index, 'serial', e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                updateBatchProduct(index, 'serial', value);
+                                            }}
                                         />
                                         <Input
                                             placeholder="Owner Address"
                                             value={product.owner}
-                                            onChange={(e) => updateBatchProduct(index, 'owner', e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                updateBatchProduct(index, 'owner', value);
+                                            }}
                                         />
                                     </div>
                                     <div className="mt-4">
                                         <Input
                                             placeholder="Metadata (comma separated)"
                                             value={product.metadata}
-                                            onChange={(e) => updateBatchProduct(index, 'metadata', e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                updateBatchProduct(index, 'metadata', value);
+                                            }}
                                         />
                                     </div>
                                 </div>
