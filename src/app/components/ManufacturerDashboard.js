@@ -384,20 +384,20 @@ export default function ManufacturerDashboard() {
     ];
 
     const StatCard = ({ title, value, icon, color = 'blue' }) => (
-        <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6`}>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-gray-600 text-sm font-medium">{title}</p>
                     <p className={`text-3xl font-bold text-${color}-600 mt-2`}>{value}</p>
                 </div>
-                <div className={`text-4xl`}>{icon}</div>
+                <div className={`text-4xl opacity-80`}>{icon}</div>
             </div>
         </div>
     );
 
     const FormSection = ({ title, children, icon }) => (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                     <span className="mr-3 text-2xl">{icon}</span>
                     {title}
@@ -416,17 +416,17 @@ export default function ManufacturerDashboard() {
             value={value}
             onChange={onChange}
             required={required}
-            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+            className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white"
         />
     );
 
     const Button = ({ onClick, children, variant = 'primary', disabled = false, type = 'button' }) => {
-        const baseClasses = "w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
+        const baseClasses = "w-full py-4 px-6 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
         const variants = {
-            primary: "bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl",
-            secondary: "bg-gray-500 hover:bg-gray-600 text-white shadow-lg hover:shadow-xl",
-            success: "bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl",
-            danger: "bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl"
+            primary: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl",
+            secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300",
+            success: "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl",
+            danger: "bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl"
         };
 
         return (
@@ -447,32 +447,42 @@ export default function ManufacturerDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="container mx-auto px-6 py-4">
+            <div className="bg-white shadow-sm border-b border-gray-200">
+                <div className="container mx-auto px-6 py-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Manufacturer Dashboard</h1>
-                            <p className="text-gray-600">Manage your products and certificates</p>
+                            <h1 className="text-3xl font-bold text-gray-900">Manufacturer Dashboard</h1>
+                            <p className="text-gray-600 mt-1">Create and manage product certificates on the blockchain</p>
                         </div>
                         <div className="flex items-center space-x-4">
-                            <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            <div className={`px-4 py-2 rounded-full text-sm font-medium ${
                                 manufacturer.isRegistered 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-yellow-100 text-yellow-800'
+                                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                                    : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
                             }`}>
-                                {manufacturer.registrationStatus}
+                                <div className="flex items-center">
+                                    <div className={`w-2 h-2 rounded-full mr-2 ${
+                                        manufacturer.isRegistered ? 'bg-green-500' : 'bg-yellow-500'
+                                    }`}></div>
+                                    {manufacturer.registrationStatus}
+                                </div>
                             </div>
                             <button
                                 onClick={connectWallet}
-                                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                                className={`px-6 py-2.5 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
                                     wallet.account
-                                        ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                        : "bg-blue-500 text-white hover:bg-blue-600"
+                                        ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                                        : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
                                 }`}
                             >
-                                {wallet.account ? `${wallet.account.slice(0, 6)}...${wallet.account.slice(-4)}` : "Connect Wallet"}
+                                {wallet.account ? (
+                                    <div className="flex items-center">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                        {`${wallet.account.slice(0, 6)}...${wallet.account.slice(-4)}`}
+                                    </div>
+                                ) : "Connect Wallet"}
                             </button>
                         </div>
                     </div>
@@ -480,14 +490,14 @@ export default function ManufacturerDashboard() {
             </div>
 
             {/* Navigation */}
-            <div className="bg-white shadow-sm border-b">
+            <div className="bg-white shadow-sm border-b border-gray-200">
                 <div className="container mx-auto px-6">
-                    <div className="flex space-x-1">
+                    <div className="flex space-x-1 overflow-x-auto">
                         {sections.map((section) => (
                             <button
                                 key={section.id}
                                 onClick={() => setUi(prev => ({ ...prev, activeSection: section.id }))}
-                                className={`flex items-center space-x-2 py-4 px-6 border-b-2 font-medium text-sm transition-all duration-300 ${
+                                className={`flex items-center space-x-2 py-4 px-6 border-b-2 font-medium text-sm transition-all duration-300 whitespace-nowrap ${
                                     ui.activeSection === section.id
                                         ? "border-blue-500 text-blue-600 bg-blue-50"
                                         : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
@@ -504,7 +514,7 @@ export default function ManufacturerDashboard() {
             {/* Content */}
             <div className="container mx-auto p-6">
                 {ui.activeSection === 'overview' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <StatCard title="Total Products" value={analytics.totalProducts} icon="📦" color="blue" />
                             <StatCard title="Verified Products" value={analytics.verifiedProducts} icon="✅" color="green" />
@@ -514,102 +524,162 @@ export default function ManufacturerDashboard() {
                         <FormSection title="Quick Actions" icon="⚡">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Button onClick={() => setUi(prev => ({ ...prev, activeSection: 'single-product' }))}>
-                                    Create Single Certificate
+                                    📦 Create Single Certificate
                                 </Button>
                                 <Button onClick={() => setUi(prev => ({ ...prev, activeSection: 'batch-products' }))}>
-                                    Create Batch Certificates
+                                    📋 Create Batch Certificates
                                 </Button>
                             </div>
                         </FormSection>
+
+                        {!manufacturer.isRegistered && (
+                            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-6">
+                                <div className="flex items-center">
+                                    <div className="text-3xl mr-4">⚠️</div>
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-yellow-800">Registration Required</h3>
+                                        <p className="text-yellow-700 mt-1">You need to register as a manufacturer before creating product certificates.</p>
+                                        <button
+                                            onClick={() => setUi(prev => ({ ...prev, activeSection: 'registration' }))}
+                                            className="mt-3 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-medium transition-colors"
+                                        >
+                                            Register Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
                 {ui.activeSection === 'registration' && (
                     <FormSection title="Manufacturer Registration" icon="🏭">
                         {!manufacturer.isRegistered ? (
-                            <form onSubmit={registerManufacturer} className="space-y-4">
-                                <Input
-                                    placeholder="Manufacturer Name (min 2 characters)"
-                                    value={manufacturer.name}
-                                    onChange={(e) => setManufacturer(prev => ({ ...prev, name: e.target.value }))}
-                                    required
-                                />
+                            <form onSubmit={registerManufacturer} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Manufacturer Name
+                                    </label>
+                                    <Input
+                                        placeholder="Enter your company name (minimum 2 characters)"
+                                        value={manufacturer.name}
+                                        onChange={(e) => setManufacturer(prev => ({ ...prev, name: e.target.value }))}
+                                        required
+                                    />
+                                    <p className="text-sm text-gray-500 mt-2">
+                                        This name will be permanently associated with your blockchain address.
+                                    </p>
+                                </div>
                                 <Button type="submit" variant="success">
-                                    Register Manufacturer
+                                    🏭 Register as Manufacturer
                                 </Button>
                             </form>
                         ) : (
-                            <div className="text-center py-8">
-                                <div className="text-6xl mb-4">✅</div>
-                                <h3 className="text-xl font-semibold text-green-800 mb-2">Registration Complete</h3>
-                                <p className="text-green-600">You are registered as: <strong>{manufacturer.name}</strong></p>
+                            <div className="text-center py-12">
+                                <div className="text-8xl mb-6">✅</div>
+                                <h3 className="text-2xl font-semibold text-green-800 mb-3">Registration Complete!</h3>
+                                <p className="text-green-600 text-lg">You are registered as: <strong>{manufacturer.name}</strong></p>
+                                <p className="text-gray-600 mt-2">You can now create product certificates and manage your inventory.</p>
                             </div>
                         )}
                     </FormSection>
                 )}
 
                 {ui.activeSection === 'single-product' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <FormSection title="Create Product Certificate" icon="📦">
-                            <form onSubmit={createProductCertificate} className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <Input
-                                        placeholder="Product Name"
-                                        value={productCertificate.name}
-                                        onChange={(e) => setProductCertificate(prev => ({ ...prev, name: e.target.value }))}
-                                        required
-                                    />
-                                    <Input
-                                        placeholder="Unique ID (IMEI, Serial, etc.)"
-                                        value={productCertificate.uniqueId}
-                                        onChange={(e) => setProductCertificate(prev => ({ ...prev, uniqueId: e.target.value }))}
-                                        required
-                                    />
+                            <form onSubmit={createProductCertificate} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Product Name
+                                        </label>
+                                        <Input
+                                            placeholder="e.g., iPhone 15 Pro"
+                                            value={productCertificate.name}
+                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, name: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Unique ID
+                                        </label>
+                                        <Input
+                                            placeholder="IMEI, Serial Number, etc."
+                                            value={productCertificate.uniqueId}
+                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, uniqueId: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <Input
-                                        placeholder="Serial Number"
-                                        value={productCertificate.serial}
-                                        onChange={(e) => setProductCertificate(prev => ({ ...prev, serial: e.target.value }))}
-                                        required
-                                    />
-                                    <Input
-                                        placeholder="Owner Address"
-                                        value={productCertificate.owner}
-                                        onChange={(e) => setProductCertificate(prev => ({ ...prev, owner: e.target.value }))}
-                                        required
-                                    />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Serial Number
+                                        </label>
+                                        <Input
+                                            placeholder="Manufacturing serial number"
+                                            value={productCertificate.serial}
+                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, serial: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Owner Address
+                                        </label>
+                                        <Input
+                                            placeholder="0x... (Ethereum wallet address)"
+                                            value={productCertificate.owner}
+                                            onChange={(e) => setProductCertificate(prev => ({ ...prev, owner: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
                                 </div>
-                                <Input
-                                    placeholder="Metadata (Color, Storage, Model - comma separated)"
-                                    value={productCertificate.metadata}
-                                    onChange={(e) => setProductCertificate(prev => ({ ...prev, metadata: e.target.value }))}
-                                    required
-                                />
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Product Metadata
+                                    </label>
+                                    <Input
+                                        placeholder="Color, Storage, Model (comma separated)"
+                                        value={productCertificate.metadata}
+                                        onChange={(e) => setProductCertificate(prev => ({ ...prev, metadata: e.target.value }))}
+                                        required
+                                    />
+                                    <p className="text-sm text-gray-500 mt-2">
+                                        Example: Space Black, 256GB, Pro Max
+                                    </p>
+                                </div>
                                 <Button type="submit" variant="success">
-                                    Create Certificate
+                                    🔐 Create & Sign Certificate
                                 </Button>
                             </form>
                         </FormSection>
 
                         {productCertificate.qrCodeData && (
                             <FormSection title="Generated Certificate" icon="📱">
-                                <div className="text-center space-y-4">
-                                    <div className="flex justify-center">
-                                        <div className="p-4 bg-white rounded-lg shadow-lg">
-                                            <QRCodeCanvas 
-                                                value={productCertificate.qrCodeData} 
-                                                size={200}
-                                                level="M"
-                                                includeMargin={true}
-                                            />
+                                <div className="text-center space-y-6">
+                                    <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8">
+                                        <div className="flex justify-center mb-6">
+                                            <div className="p-6 bg-white rounded-2xl shadow-lg">
+                                                <QRCodeCanvas 
+                                                    value={productCertificate.qrCodeData} 
+                                                    size={200}
+                                                    level="M"
+                                                    includeMargin={true}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2 text-gray-700">
+                                            <p className="font-semibold text-lg">{productCertificate.name}</p>
+                                            <p className="text-sm">ID: {productCertificate.uniqueId}</p>
+                                            <p className="text-sm">Serial: {productCertificate.serial}</p>
                                         </div>
                                     </div>
-                                    <p className="text-gray-600">Product: {productCertificate.name}</p>
-                                    <p className="text-gray-600">ID: {productCertificate.uniqueId}</p>
                                     <div className="max-w-md mx-auto">
                                         <Button onClick={downloadQRCode} variant="secondary">
-                                            Download QR Code
+                                            📥 Download QR Code
                                         </Button>
                                     </div>
                                 </div>
@@ -620,18 +690,28 @@ export default function ManufacturerDashboard() {
 
                 {ui.activeSection === 'batch-products' && (
                     <FormSection title="Batch Product Certificates" icon="📋">
-                        <div className="space-y-6">
+                        <div className="space-y-8">
+                            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                <div className="flex items-center">
+                                    <div className="text-2xl mr-3">💡</div>
+                                    <div>
+                                        <h4 className="font-medium text-blue-900">Batch Certificate Creation</h4>
+                                        <p className="text-blue-700 text-sm">Create multiple product certificates at once for efficient inventory management.</p>
+                                    </div>
+                                </div>
+                            </div>
+
                             {batchProducts.map((product, index) => (
-                                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h4 className="font-medium text-gray-800">Product {index + 1}</h4>
+                                <div key={index} className="border border-gray-200 rounded-xl p-6 bg-gray-50">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h4 className="font-semibold text-gray-800 text-lg">Product {index + 1}</h4>
                                         {batchProducts.length > 1 && (
-                                            <Button 
-                                                onClick={() => removeBatchProduct(index)} 
-                                                variant="danger"
+                                            <button
+                                                onClick={() => removeBatchProduct(index)}
+                                                className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg font-medium transition-colors"
                                             >
                                                 Remove
-                                            </Button>
+                                            </button>
                                         )}
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -668,10 +748,10 @@ export default function ManufacturerDashboard() {
                             
                             <div className="flex space-x-4">
                                 <Button onClick={addBatchProduct} variant="secondary">
-                                    Add Another Product
+                                    ➕ Add Another Product
                                 </Button>
                                 <Button onClick={createBatchCertificates} variant="success">
-                                    Create All Certificates
+                                    🔐 Create All Certificates
                                 </Button>
                             </div>
                         </div>
@@ -680,10 +760,26 @@ export default function ManufacturerDashboard() {
 
                 {ui.activeSection === 'analytics' && (
                     <FormSection title="Analytics & Reports" icon="📈">
-                        <div className="text-center py-8">
-                            <div className="text-6xl mb-4">📊</div>
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">Analytics Coming Soon</h3>
-                            <p className="text-gray-600">Detailed analytics and reporting features will be available here.</p>
+                        <div className="text-center py-16">
+                            <div className="text-8xl mb-6">📊</div>
+                            <h3 className="text-2xl font-semibold text-gray-800 mb-3">Analytics Coming Soon</h3>
+                            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                                Detailed analytics, reporting features, and insights about your product certificates will be available here.
+                            </p>
+                            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                                <div className="bg-blue-50 rounded-xl p-4">
+                                    <div className="text-2xl mb-2">📈</div>
+                                    <p className="text-sm text-blue-800 font-medium">Product Performance</p>
+                                </div>
+                                <div className="bg-green-50 rounded-xl p-4">
+                                    <div className="text-2xl mb-2">🔍</div>
+                                    <p className="text-sm text-green-800 font-medium">Verification Insights</p>
+                                </div>
+                                <div className="bg-purple-50 rounded-xl p-4">
+                                    <div className="text-2xl mb-2">📊</div>
+                                    <p className="text-sm text-purple-800 font-medium">Usage Statistics</p>
+                                </div>
+                            </div>
                         </div>
                     </FormSection>
                 )}
