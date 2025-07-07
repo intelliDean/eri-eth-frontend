@@ -73,8 +73,11 @@ export default function DashboardLayout({ children }) {
 
                         {/* Desktop Navigation */}
                         <div className="hidden md:flex items-center space-x-8">
-                            <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 transition-colors">
-                                Dashboard
+                            <Link href="/manufacturer" className="text-gray-600 hover:text-blue-600 transition-colors">
+                                Manufacturer
+                            </Link>
+                            <Link href="/user" className="text-gray-600 hover:text-blue-600 transition-colors">
+                                User
                             </Link>
                             <Link href="/#features" className="text-gray-600 hover:text-blue-600 transition-colors">
                                 Features
@@ -113,8 +116,11 @@ export default function DashboardLayout({ children }) {
                     {isMenuOpen && (
                         <div className="md:hidden py-4 border-t">
                             <div className="flex flex-col space-y-2">
-                                <Link href="/dashboard" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
-                                    Dashboard
+                                <Link href="/manufacturer" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
+                                    Manufacturer
+                                </Link>
+                                <Link href="/user" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
+                                    User
                                 </Link>
                                 <Link href="/#features" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
                                     Features

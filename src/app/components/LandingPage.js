@@ -119,12 +119,12 @@ export default function LandingPage() {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <Link href="/dashboard" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                                Launch App
+                            <Link href="/manufacturer" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                Manufacturer Dashboard
                             </Link>
-                            <button className="border-2 border-gray-400 text-gray-300 hover:border-white hover:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300">
-                                Learn More
-                            </button>
+                            <Link href="/user" className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                User Dashboard
+                            </Link>
                         </div>
                     </div>
 
@@ -276,7 +276,14 @@ export default function LandingPage() {
                             Join the future of product authenticity and ownership verification
                         </p>
                         <Link href="/dashboard" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg inline-block">
-                            Launch Application
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                <Link href="/manufacturer" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                    Manufacturer Dashboard
+                                </Link>
+                                <Link href="/user" className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                    User Dashboard
+                                </Link>
+                            </div>
                         </Link>
                     </div>
                 </div>
