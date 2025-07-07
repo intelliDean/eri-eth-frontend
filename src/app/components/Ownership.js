@@ -54,11 +54,42 @@ export default function Ownership() {
             
             // Check if already connected
             checkConnection();
+            setupEventListeners();
         } else {
             setProvider(ethers.getDefaultProvider);
-            toast.error("Please install MetaMask!");
         }
     }, []);
+
+    const setupEventListeners = () => {
+        if (typeof window.ethereum !== "undefined") {
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
+            window.ethereum.on('chainChanged', handleChainChanged);
+            window.ethereum.on('disconnect', handleDisconnect);
+        }
+    };
+
+    const handleAccountsChanged = (accounts) => {
+        if (accounts.length === 0) {
+            setSigner(null);
+            setAccount(null);
+            setSContract(null);
+            toast.info("Wallet disconnected");
+        } else if (accounts[0] !== account) {
+            connectWallet();
+        }
+    };
+
+    const handleChainChanged = (chainId) => {
+        toast.info("Network changed");
+        window.location.reload();
+    };
+
+    const handleDisconnect = () => {
+        setSigner(null);
+        setAccount(null);
+        setSContract(null);
+        toast.info("Wallet disconnected");
+    };
 
     const checkConnection = async () => {
         if (typeof window.ethereum !== "undefined") {
@@ -79,8 +110,12 @@ export default function Ownership() {
     };
 
     const connectWallet = async () => {
+        if (typeof window.ethereum === "undefined") {
+            return toast.error("MetaMask not detected. Please install MetaMask!");
+        }
+
         if (!provider) {
-            return toast.error("MetaMask not detected");
+            return toast.error("Provider not initialized");
         }
 
         try {
@@ -100,11 +135,15 @@ export default function Ownership() {
             //to disconnect wallet
             setSigner(null);
             setAccount(null);
-            setRContract(new ethers.Contract(OWNERSHIP, OWNERSHIP_ABI, provider)); // to call view function
+            setSContract(null);
             toast.success("Wallet disconnected");
 
         } catch (error) {
-            toast.error(`Error: ${error.message}`);
+            if (error.code === 4001) {
+                toast.error("Connection rejected by user");
+            } else {
+                toast.error(`Connection error: ${error.message}`);
+            }
         }
     };
 

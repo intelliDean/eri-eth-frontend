@@ -61,6 +61,7 @@ export default function ManufacturerDashboard() {
     // Initialize wallet and contracts
     useEffect(() => {
         initializeWallet();
+        setupEventListeners();
     }, []);
 
     const initializeWallet = async () => {
@@ -93,36 +94,92 @@ export default function ManufacturerDashboard() {
         }
     };
 
+    const setupEventListeners = () => {
+        if (typeof window.ethereum !== "undefined") {
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
+            window.ethereum.on('chainChanged', handleChainChanged);
+            window.ethereum.on('disconnect', handleDisconnect);
+        }
+    };
+
+    const handleAccountsChanged = (accounts) => {
+        if (accounts.length === 0) {
+            setWallet(prev => ({ ...prev, signer: null, account: null }));
+            setContracts(prev => ({ ...prev, authenticityWrite: null, ownershipWrite: null }));
+            toast.info("Wallet disconnected");
+        } else if (accounts[0] !== wallet.account) {
+            connectWallet();
+        }
+    };
+
+    const handleChainChanged = (chainId) => {
+        setWallet(prev => ({ ...prev, chainId: parseInt(chainId, 16) }));
+        toast.info("Network changed");
+        window.location.reload();
+    };
+
+    const handleDisconnect = () => {
+        setWallet(prev => ({ ...prev, signer: null, account: null }));
+        setContracts(prev => ({ ...prev, authenticityWrite: null, ownershipWrite: null }));
+        toast.info("Wallet disconnected");
+    };
+
     const connectWallet = async () => {
+        if (typeof window.ethereum === "undefined") {
+            toast.error("MetaMask not detected. Please install MetaMask!");
+            return;
+        }
+
         if (!wallet.provider) {
-            toast.error("MetaMask not detected");
+            toast.error("Provider not initialized");
             return;
         }
 
         try {
-            await window.ethereum.request({ method: "eth_requestAccounts" });
-            const signer = await wallet.provider.getSigner();
-            const address = await signer.getAddress();
+            if (!wallet.account) {
+                await window.ethereum.request({ method: "eth_requestAccounts" });
+                const signer = await wallet.provider.getSigner();
+                const address = await signer.getAddress();
 
-            setWallet(prev => ({
-                ...prev,
-                signer,
-                account: address
-            }));
+                setWallet(prev => ({
+                    ...prev,
+                    signer,
+                    account: address
+                }));
 
-            setContracts(prev => ({
-                ...prev,
-                authenticityWrite: new ethers.Contract(AUTHENTICITY_CONTRACT, AUTHENTICITY_ABI, signer),
-                ownershipWrite: new ethers.Contract(OWNERSHIP_CONTRACT, OWNERSHIP_ABI, signer)
-            }));
+                setContracts(prev => ({
+                    ...prev,
+                    authenticityWrite: new ethers.Contract(AUTHENTICITY_CONTRACT, AUTHENTICITY_ABI, signer),
+                    ownershipWrite: new ethers.Contract(OWNERSHIP_CONTRACT, OWNERSHIP_ABI, signer)
+                }));
 
-            // Check manufacturer registration status
-            await checkManufacturerStatus(address);
+                // Check manufacturer registration status
+                await checkManufacturerStatus(address);
 
-            toast.success(`Connected: ${address.slice(0, 6)}...${address.slice(-4)}`);
+                toast.success(`Connected: ${address.slice(0, 6)}...${address.slice(-4)}`);
+            } else {
+                // Disconnect
+                setWallet(prev => ({
+                    ...prev,
+                    signer: null,
+                    account: null
+                }));
+
+                setContracts(prev => ({
+                    ...prev,
+                    authenticityWrite: null,
+                    ownershipWrite: null
+                }));
+
+                toast.success("Wallet disconnected");
+            }
         } catch (error) {
-            console.error("Connection error:", error);
-            toast.error(`Error: ${error.message}`);
+            if (error.code === 4001) {
+                toast.error("Connection rejected by user");
+            } else {
+                console.error("Connection error:", error);
+                toast.error(`Connection error: ${error.message}`);
+            }
         }
     };
 

@@ -10,16 +10,54 @@ export default function DashboardLayout({ children }) {
     const [account, setAccount] = useState(null);
     const [provider, setProvider] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isConnecting, setIsConnecting] = useState(false);
 
     useEffect(() => {
-        if (typeof window.ethereum !== "undefined") {
-            const web3Provider = new ethers.BrowserProvider(window.ethereum);
-            setProvider(web3Provider);
-            
-            // Check if already connected
-            checkConnection();
-        }
+        initializeProvider();
+        setupEventListeners();
     }, []);
+
+    const initializeProvider = async () => {
+        if (typeof window.ethereum !== "undefined") {
+            try {
+                const web3Provider = new ethers.BrowserProvider(window.ethereum);
+                setProvider(web3Provider);
+                
+                // Check if already connected
+                await checkConnection();
+            } catch (error) {
+                console.error("Provider initialization error:", error);
+            }
+        }
+    };
+
+    const setupEventListeners = () => {
+        if (typeof window.ethereum !== "undefined") {
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
+            window.ethereum.on('chainChanged', handleChainChanged);
+            window.ethereum.on('disconnect', handleDisconnect);
+        }
+    };
+
+    const handleAccountsChanged = (accounts) => {
+        if (accounts.length === 0) {
+            setAccount(null);
+            toast.info("Wallet disconnected");
+        } else if (accounts[0] !== account) {
+            setAccount(accounts[0]);
+            toast.info(`Account changed to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`);
+        }
+    };
+
+    const handleChainChanged = (chainId) => {
+        toast.info("Network changed");
+        window.location.reload();
+    };
+
+    const handleDisconnect = () => {
+        setAccount(null);
+        toast.info("Wallet disconnected");
+    };
 
     const checkConnection = async () => {
         if (typeof window.ethereum !== "undefined") {
@@ -35,25 +73,39 @@ export default function DashboardLayout({ children }) {
     };
 
     const connectWallet = async () => {
-        if (!provider) {
-            toast.error("MetaMask not detected");
+        if (typeof window.ethereum === "undefined") {
+            toast.error("MetaMask not detected. Please install MetaMask!");
             return;
         }
 
+        if (!provider) {
+            toast.error("Provider not initialized");
+            return;
+        }
+
+        setIsConnecting(true);
+
         try {
             if (!account) {
+                // Connect wallet
                 await window.ethereum.request({ method: "eth_requestAccounts" });
                 const signer = await provider.getSigner();
                 const address = await signer.getAddress();
                 setAccount(address);
                 toast.success(`Connected: ${address.slice(0, 6)}...${address.slice(-4)}`);
             } else {
-                // Disconnect
+                // Disconnect wallet
                 setAccount(null);
                 toast.success("Wallet disconnected");
             }
         } catch (error) {
-            toast.error(`Error: ${error.message}`);
+            if (error.code === 4001) {
+                toast.error("Connection rejected by user");
+            } else {
+                toast.error(`Connection error: ${error.message}`);
+            }
+        } finally {
+            setIsConnecting(false);
         }
     };
 
@@ -91,13 +143,23 @@ export default function DashboardLayout({ children }) {
                         <div className="flex items-center space-x-4">
                             <button
                                 onClick={connectWallet}
+                                disabled={isConnecting}
                                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                                     account
                                         ? "bg-green-100 text-green-700 hover:bg-green-200"
                                         : "bg-blue-500 text-white hover:bg-blue-600"
-                                }`}
+                                } disabled:opacity-50 disabled:cursor-not-allowed`}
                             >
-                                {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}
+                                {isConnecting ? (
+                                    <div className="flex items-center">
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                                        Connecting...
+                                    </div>
+                                ) : account ? (
+                                    `${account.slice(0, 6)}...${account.slice(-4)}`
+                                ) : (
+                                    "Connect Wallet"
+                                )}
                             </button>
 
                             {/* Mobile menu button */}

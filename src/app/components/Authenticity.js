@@ -56,6 +56,7 @@ export default function Authenticity() {
     // Initialize wallet and contracts
     useEffect(() => {
         initializeWallet();
+        setupEventListeners();
     }, []);
 
     const initializeWallet = async () => {
@@ -89,9 +90,44 @@ export default function Authenticity() {
         }
     };
 
+    const setupEventListeners = () => {
+        if (typeof window.ethereum !== "undefined") {
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
+            window.ethereum.on('chainChanged', handleChainChanged);
+            window.ethereum.on('disconnect', handleDisconnect);
+        }
+    };
+
+    const handleAccountsChanged = (accounts) => {
+        if (accounts.length === 0) {
+            setWallet(prev => ({ ...prev, signer: null, account: null }));
+            setContracts(prev => ({ ...prev, writeContract: null }));
+            toast.info("Wallet disconnected");
+        } else if (accounts[0] !== wallet.account) {
+            connectWallet();
+        }
+    };
+
+    const handleChainChanged = (chainId) => {
+        setWallet(prev => ({ ...prev, chainId: parseInt(chainId, 16) }));
+        toast.info("Network changed");
+        window.location.reload();
+    };
+
+    const handleDisconnect = () => {
+        setWallet(prev => ({ ...prev, signer: null, account: null }));
+        setContracts(prev => ({ ...prev, writeContract: null }));
+        toast.info("Wallet disconnected");
+    };
+
     const connectWallet = async () => {
+        if (typeof window.ethereum === "undefined") {
+            toast.error("MetaMask not detected. Please install MetaMask!");
+            return;
+        }
+
         if (!wallet.provider) {
-            toast.error("MetaMask not detected");
+            toast.error("Provider not initialized");
             return;
         }
 
@@ -134,8 +170,12 @@ export default function Authenticity() {
                 toast.success("Wallet disconnected");
             }
         } catch (error) {
-            console.error("Connection error:", error);
-            toast.error(`Error: ${error.message}`);
+            if (error.code === 4001) {
+                toast.error("Connection rejected by user");
+            } else {
+                console.error("Connection error:", error);
+                toast.error(`Connection error: ${error.message}`);
+            }
         }
     };
 
