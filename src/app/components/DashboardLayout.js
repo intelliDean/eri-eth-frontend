@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Link from "next/link";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 export default function DashboardLayout({ children }) {
     const [account, setAccount] = useState(null);
@@ -200,20 +199,6 @@ export default function DashboardLayout({ children }) {
             <main>
                 {children}
             </main>
-
-            {/* Toast Container */}
-            <ToastContainer 
-                position="top-right" 
-                autoClose={5000} 
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
         </div>
     );
 }
