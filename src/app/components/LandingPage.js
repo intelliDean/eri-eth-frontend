@@ -275,16 +275,14 @@ export default function LandingPage() {
                         <p className="text-xl text-gray-300 mb-8">
                             Join the future of product authenticity and ownership verification
                         </p>
-                        <Link href="/dashboard" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg inline-block">
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                                <Link href="/manufacturer" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                                    Manufacturer Dashboard
-                                </Link>
-                                <Link href="/user" className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                                    User Dashboard
-                                </Link>
-                            </div>
-                        </Link>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                            <Link href="/manufacturer" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                Manufacturer Dashboard
+                            </Link>
+                            <Link href="/user" className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                User Dashboard
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
