@@ -14,10 +14,10 @@ export function signTypedData(certificate, chainId) {
         },
         primaryType: "Certificate",
         domain: {
-            name: process.env.NEXT_PUBLIC_SIGNING_DOMAIN || "ERIProtocol",
+            name: process.env.NEXT_PUBLIC_SIGNING_DOMAIN,
             version: process.env.NEXT_PUBLIC_SIGNATURE_VERSION || "1",
             chainId: Number(chainId),
-            verifyingContract: process.env.NEXT_PUBLIC_AUTHENTICITY || "0x0000000000000000000000000000000000000000",
+            verifyingContract: process.env.NEXT_PUBLIC_AUTHENTICITY,
         },
         value: {
             name: certificate.name,
