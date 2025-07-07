@@ -394,20 +394,20 @@ export default function UserDashboard() {
     ];
 
     const StatCard = ({ title, value, icon, color = 'blue' }) => (
-        <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6`}>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-gray-600 text-sm font-medium">{title}</p>
                     <p className={`text-3xl font-bold text-${color}-600 mt-2`}>{value}</p>
                 </div>
-                <div className={`text-4xl`}>{icon}</div>
+                <div className={`text-4xl opacity-80`}>{icon}</div>
             </div>
         </div>
     );
 
     const FormSection = ({ title, children, icon }) => (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                     <span className="mr-3 text-2xl">{icon}</span>
                     {title}
@@ -426,7 +426,7 @@ export default function UserDashboard() {
             value={value}
             onChange={onChange}
             required={required}
-            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+            className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white"
         />
     );
 
@@ -436,17 +436,17 @@ export default function UserDashboard() {
             value={value}
             onChange={onChange}
             rows={rows}
-            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+            className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-gray-50 focus:bg-white"
         />
     );
 
     const Button = ({ onClick, children, variant = 'primary', disabled = false, type = 'button' }) => {
-        const baseClasses = "w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
+        const baseClasses = "w-full py-4 px-6 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
         const variants = {
-            primary: "bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl",
-            secondary: "bg-gray-500 hover:bg-gray-600 text-white shadow-lg hover:shadow-xl",
-            success: "bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl",
-            danger: "bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl"
+            primary: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl",
+            secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300",
+            success: "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl",
+            danger: "bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl"
         };
 
         return (
@@ -467,32 +467,42 @@ export default function UserDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="container mx-auto px-6 py-4">
+            <div className="bg-white shadow-sm border-b border-gray-200">
+                <div className="container mx-auto px-6 py-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">User Dashboard</h1>
-                            <p className="text-gray-600">Manage your products and verify authenticity</p>
+                            <h1 className="text-3xl font-bold text-gray-900">User Dashboard</h1>
+                            <p className="text-gray-600 mt-1">Verify products and manage your digital ownership</p>
                         </div>
                         <div className="flex items-center space-x-4">
-                            <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            <div className={`px-4 py-2 rounded-full text-sm font-medium ${
                                 user.isRegistered 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-yellow-100 text-yellow-800'
+                                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                                    : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
                             }`}>
-                                {user.registrationStatus}
+                                <div className="flex items-center">
+                                    <div className={`w-2 h-2 rounded-full mr-2 ${
+                                        user.isRegistered ? 'bg-green-500' : 'bg-yellow-500'
+                                    }`}></div>
+                                    {user.registrationStatus}
+                                </div>
                             </div>
                             <button
                                 onClick={connectWallet}
-                                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                                className={`px-6 py-2.5 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
                                     wallet.account
-                                        ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                        : "bg-blue-500 text-white hover:bg-blue-600"
+                                        ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                                        : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
                                 }`}
                             >
-                                {wallet.account ? `${wallet.account.slice(0, 6)}...${wallet.account.slice(-4)}` : "Connect Wallet"}
+                                {wallet.account ? (
+                                    <div className="flex items-center">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                        {`${wallet.account.slice(0, 6)}...${wallet.account.slice(-4)}`}
+                                    </div>
+                                ) : "Connect Wallet"}
                             </button>
                         </div>
                     </div>
@@ -500,7 +510,7 @@ export default function UserDashboard() {
             </div>
 
             {/* Navigation */}
-            <div className="bg-white shadow-sm border-b">
+            <div className="bg-white shadow-sm border-b border-gray-200">
                 <div className="container mx-auto px-6">
                     <div className="flex space-x-1 overflow-x-auto">
                         {sections.map((section) => (
@@ -524,7 +534,7 @@ export default function UserDashboard() {
             {/* Content */}
             <div className="container mx-auto p-6">
                 {ui.activeSection === 'overview' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <StatCard title="My Items" value={analytics.totalItems} icon="📦" color="blue" />
                             <StatCard title="Verified Items" value={analytics.verifiedItems} icon="✅" color="green" />
@@ -534,22 +544,40 @@ export default function UserDashboard() {
                         <FormSection title="Quick Actions" icon="⚡">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Button onClick={() => setUi(prev => ({ ...prev, activeSection: 'claim-ownership' }))}>
-                                    Claim Product Ownership
+                                    🔒 Claim Product Ownership
                                 </Button>
                                 <Button onClick={() => setUi(prev => ({ ...prev, activeSection: 'verify-product' }))}>
-                                    Verify Product Authenticity
+                                    ✅ Verify Product Authenticity
                                 </Button>
                             </div>
                         </FormSection>
 
+                        {!user.isRegistered && (
+                            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-6">
+                                <div className="flex items-center">
+                                    <div className="text-3xl mr-4">⚠️</div>
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-yellow-800">Registration Required</h3>
+                                        <p className="text-yellow-700 mt-1">Register to claim ownership of products and access all features.</p>
+                                        <button
+                                            onClick={() => setUi(prev => ({ ...prev, activeSection: 'registration' }))}
+                                            className="mt-3 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-medium transition-colors"
+                                        >
+                                            Register Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {user.isRegistered && myItems.length > 0 && (
                             <FormSection title="Recent Items" icon="📦">
-                                <div className="space-y-3">
+                                <div className="space-y-4">
                                     {myItems.slice(0, 3).map((item, index) => (
-                                        <div key={index} className="p-3 bg-gray-50 rounded-lg border">
+                                        <div key={index} className="p-4 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="font-medium text-gray-800">{item.name}</p>
+                                                    <p className="font-semibold text-gray-800">{item.name}</p>
                                                     <p className="text-sm text-gray-600">ID: {item.itemId}</p>
                                                 </div>
                                                 <div className="text-right">
@@ -568,22 +596,31 @@ export default function UserDashboard() {
                 {ui.activeSection === 'registration' && (
                     <FormSection title="User Registration" icon="👤">
                         {!user.isRegistered ? (
-                            <form onSubmit={registerUser} className="space-y-4">
-                                <Input
-                                    placeholder="Username (min 3 characters)"
-                                    value={user.username}
-                                    onChange={(e) => setUser(prev => ({ ...prev, username: e.target.value }))}
-                                    required
-                                />
+                            <form onSubmit={registerUser} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Username
+                                    </label>
+                                    <Input
+                                        placeholder="Enter your username (minimum 3 characters)"
+                                        value={user.username}
+                                        onChange={(e) => setUser(prev => ({ ...prev, username: e.target.value }))}
+                                        required
+                                    />
+                                    <p className="text-sm text-gray-500 mt-2">
+                                        This username will be associated with your blockchain address.
+                                    </p>
+                                </div>
                                 <Button type="submit" variant="success">
-                                    Register User
+                                    👤 Register User
                                 </Button>
                             </form>
                         ) : (
-                            <div className="text-center py-8">
-                                <div className="text-6xl mb-4">✅</div>
-                                <h3 className="text-xl font-semibold text-green-800 mb-2">Registration Complete</h3>
-                                <p className="text-green-600">Welcome, <strong>{user.username}</strong>!</p>
+                            <div className="text-center py-12">
+                                <div className="text-8xl mb-6">✅</div>
+                                <h3 className="text-2xl font-semibold text-green-800 mb-3">Registration Complete!</h3>
+                                <p className="text-green-600 text-lg">Welcome, <strong>{user.username}</strong>!</p>
+                                <p className="text-gray-600 mt-2">You can now claim ownership of products and access all features.</p>
                             </div>
                         )}
                     </FormSection>
@@ -592,44 +629,48 @@ export default function UserDashboard() {
                 {ui.activeSection === 'my-items' && (
                     <FormSection title="My Items" icon="📦">
                         {myItems.length > 0 ? (
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 {myItems.map((item, index) => (
-                                    <div key={index} className="border border-gray-200 rounded-lg p-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div key={index} className="border border-gray-200 rounded-xl p-6 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                             <div>
-                                                <h4 className="font-semibold text-gray-800 mb-2">{item.name}</h4>
-                                                <div className="space-y-1 text-sm text-gray-600">
+                                                <h4 className="font-semibold text-gray-800 mb-3 text-lg">{item.name}</h4>
+                                                <div className="space-y-2 text-sm text-gray-600">
                                                     <p><span className="font-medium">ID:</span> {item.itemId}</p>
                                                     <p><span className="font-medium">Serial:</span> {item.serial}</p>
                                                     <p><span className="font-medium">Manufacturer:</span> {item.manufacturer}</p>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div className="space-y-1 text-sm text-gray-600">
+                                                <div className="space-y-2 text-sm text-gray-600 mb-4">
                                                     <p><span className="font-medium">Date:</span> {item.date}</p>
                                                     <p><span className="font-medium">Metadata:</span> {item.metadata}</p>
                                                 </div>
-                                                <div className="mt-3">
-                                                    <Button 
-                                                        onClick={() => {
-                                                            setOwnership(prev => ({ ...prev, selectedItemId: item.itemId }));
-                                                            setUi(prev => ({ ...prev, activeSection: 'transfer-ownership' }));
-                                                        }}
-                                                        variant="secondary"
-                                                    >
-                                                        Transfer Ownership
-                                                    </Button>
-                                                </div>
+                                                <Button 
+                                                    onClick={() => {
+                                                        setOwnership(prev => ({ ...prev, selectedItemId: item.itemId }));
+                                                        setUi(prev => ({ ...prev, activeSection: 'transfer-ownership' }));
+                                                    }}
+                                                    variant="secondary"
+                                                >
+                                                    🔄 Transfer Ownership
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-8">
-                                <div className="text-6xl mb-4">📦</div>
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">No Items Yet</h3>
-                                <p className="text-gray-600">Claim ownership of products to see them here.</p>
+                            <div className="text-center py-16">
+                                <div className="text-8xl mb-6">📦</div>
+                                <h3 className="text-2xl font-semibold text-gray-800 mb-3">No Items Yet</h3>
+                                <p className="text-gray-600 text-lg">Claim ownership of products to see them here.</p>
+                                <button
+                                    onClick={() => setUi(prev => ({ ...prev, activeSection: 'claim-ownership' }))}
+                                    className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors"
+                                >
+                                    Claim Your First Product
+                                </button>
                             </div>
                         )}
                     </FormSection>
@@ -637,59 +678,96 @@ export default function UserDashboard() {
 
                 {ui.activeSection === 'claim-ownership' && (
                     <FormSection title="Claim Product Ownership" icon="🔒">
-                        <form onSubmit={claimOwnership} className="space-y-4">
-                            <TextArea
-                                placeholder="Paste certificate signature data (from QR code or manufacturer)"
-                                value={ownership.claimSignature}
-                                onChange={(e) => setOwnership(prev => ({ ...prev, claimSignature: e.target.value }))}
-                                rows={6}
-                            />
-                            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <p className="text-blue-800 text-sm">
-                                    <strong>How to claim:</strong> Scan the QR code provided by the manufacturer or paste the certificate signature data above.
-                                </p>
+                        <form onSubmit={claimOwnership} className="space-y-6">
+                            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                <div className="flex items-center">
+                                    <div className="text-2xl mr-3">💡</div>
+                                    <div>
+                                        <h4 className="font-medium text-blue-900">How to claim ownership</h4>
+                                        <p className="text-blue-700 text-sm">Scan the QR code provided by the manufacturer or paste the certificate signature data below.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Certificate Signature Data
+                                </label>
+                                <TextArea
+                                    placeholder="Paste certificate signature data (from QR code or manufacturer)"
+                                    value={ownership.claimSignature}
+                                    onChange={(e) => setOwnership(prev => ({ ...prev, claimSignature: e.target.value }))}
+                                    rows={6}
+                                />
                             </div>
                             <Button type="submit" variant="success">
-                                Claim Ownership
+                                🔒 Claim Ownership
                             </Button>
                         </form>
                     </FormSection>
                 )}
 
                 {ui.activeSection === 'verify-product' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <FormSection title="Verify Product Authenticity" icon="✅">
-                            <form onSubmit={verifyProduct} className="space-y-4">
-                                <TextArea
-                                    placeholder="Paste certificate signature data to verify authenticity"
-                                    value={verification.signature}
-                                    onChange={(e) => setVerification(prev => ({ ...prev, signature: e.target.value }))}
-                                    rows={6}
-                                />
+                            <form onSubmit={verifyProduct} className="space-y-6">
+                                <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                                    <div className="flex items-center">
+                                        <div className="text-2xl mr-3">🔍</div>
+                                        <div>
+                                            <h4 className="font-medium text-green-900">Product Verification</h4>
+                                            <p className="text-green-700 text-sm">Verify the authenticity of any product by checking its certificate signature.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Certificate Signature Data
+                                    </label>
+                                    <TextArea
+                                        placeholder="Paste certificate signature data to verify authenticity"
+                                        value={verification.signature}
+                                        onChange={(e) => setVerification(prev => ({ ...prev, signature: e.target.value }))}
+                                        rows={6}
+                                    />
+                                </div>
                                 <Button type="submit" variant="success">
-                                    Verify Product
+                                    ✅ Verify Product
                                 </Button>
                             </form>
                         </FormSection>
 
                         {verification.result && (
                             <FormSection title="Verification Result" icon="📋">
-                                <div className={`p-4 rounded-lg border ${
+                                <div className={`p-6 rounded-xl border ${
                                     verification.result.isValid 
                                         ? 'bg-green-50 border-green-200' 
                                         : 'bg-red-50 border-red-200'
                                 }`}>
-                                    <h4 className={`font-semibold mb-2 ${
+                                    <h4 className={`font-semibold mb-4 text-xl ${
                                         verification.result.isValid ? 'text-green-800' : 'text-red-800'
                                     }`}>
                                         {verification.result.isValid ? '✅ Authentic Product' : '❌ Verification Failed'}
                                     </h4>
                                     {verification.result.isValid && (
-                                        <div className="space-y-1 text-sm text-green-700">
-                                            <p><span className="font-medium">Product:</span> {verification.result.productName}</p>
-                                            <p><span className="font-medium">ID:</span> {verification.result.uniqueId}</p>
-                                            <p><span className="font-medium">Manufacturer:</span> {verification.result.manufacturerName}</p>
-                                            <p><span className="font-medium">Owner:</span> {verification.result.owner}</p>
+                                        <div className="space-y-3 text-green-700">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-sm font-medium">Product Name</p>
+                                                    <p className="text-lg">{verification.result.productName}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium">Product ID</p>
+                                                    <p className="text-lg">{verification.result.uniqueId}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium">Manufacturer</p>
+                                                    <p className="text-lg">{verification.result.manufacturerName}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium">Owner</p>
+                                                    <p className="text-lg font-mono text-sm">{verification.result.owner}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -699,52 +777,87 @@ export default function UserDashboard() {
                 )}
 
                 {ui.activeSection === 'transfer-ownership' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         <FormSection title="Generate Transfer Code" icon="🔄">
-                            <form onSubmit={generateTransferCode} className="space-y-4">
-                                <select
-                                    value={ownership.selectedItemId}
-                                    onChange={(e) => setOwnership(prev => ({ ...prev, selectedItemId: e.target.value }))}
-                                    className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    required
-                                >
-                                    <option value="">Select an item to transfer</option>
-                                    {myItems.map((item, index) => (
-                                        <option key={index} value={item.itemId}>
-                                            {item.name} - {item.itemId}
-                                        </option>
-                                    ))}
-                                </select>
-                                <Input
-                                    placeholder="New owner's wallet address"
-                                    value={ownership.transferToAddress}
-                                    onChange={(e) => setOwnership(prev => ({ ...prev, transferToAddress: e.target.value }))}
-                                    required
-                                />
+                            <form onSubmit={generateTransferCode} className="space-y-6">
+                                <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                                    <div className="flex items-center">
+                                        <div className="text-2xl mr-3">🔄</div>
+                                        <div>
+                                            <h4 className="font-medium text-purple-900">Ownership Transfer</h4>
+                                            <p className="text-purple-700 text-sm">Generate a secure transfer code to transfer ownership to another user.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Select Item to Transfer
+                                    </label>
+                                    <select
+                                        value={ownership.selectedItemId}
+                                        onChange={(e) => setOwnership(prev => ({ ...prev, selectedItemId: e.target.value }))}
+                                        className="w-full p-4 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white"
+                                        required
+                                    >
+                                        <option value="">Select an item to transfer</option>
+                                        {myItems.map((item, index) => (
+                                            <option key={index} value={item.itemId}>
+                                                {item.name} - {item.itemId}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        New Owner's Wallet Address
+                                    </label>
+                                    <Input
+                                        placeholder="0x... (Ethereum wallet address)"
+                                        value={ownership.transferToAddress}
+                                        onChange={(e) => setOwnership(prev => ({ ...prev, transferToAddress: e.target.value }))}
+                                        required
+                                    />
+                                </div>
                                 <Button type="submit" variant="success">
-                                    Generate Transfer Code
+                                    🔄 Generate Transfer Code
                                 </Button>
                             </form>
 
                             {ownership.transferCode && (
-                                <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                                    <h4 className="font-semibold text-green-800 mb-2">Transfer Code Generated</h4>
-                                    <p className="text-green-700 text-sm break-all">{ownership.transferCode}</p>
-                                    <p className="text-green-600 text-xs mt-2">Share this code with the new owner to complete the transfer.</p>
+                                <div className="mt-6 p-6 bg-green-50 rounded-xl border border-green-200">
+                                    <h4 className="font-semibold text-green-800 mb-3 text-lg">Transfer Code Generated</h4>
+                                    <div className="bg-white p-4 rounded-lg border border-green-300 mb-3">
+                                        <p className="text-green-700 font-mono text-sm break-all">{ownership.transferCode}</p>
+                                    </div>
+                                    <p className="text-green-600 text-sm">Share this code with the new owner to complete the transfer.</p>
                                 </div>
                             )}
                         </FormSection>
 
                         <FormSection title="Claim Transfer" icon="📥">
-                            <form onSubmit={claimTransfer} className="space-y-4">
-                                <Input
-                                    placeholder="Enter transfer code received from current owner"
-                                    value={ownership.transferCode}
-                                    onChange={(e) => setOwnership(prev => ({ ...prev, transferCode: e.target.value }))}
-                                    required
-                                />
+                            <form onSubmit={claimTransfer} className="space-y-6">
+                                <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                                    <div className="flex items-center">
+                                        <div className="text-2xl mr-3">📥</div>
+                                        <div>
+                                            <h4 className="font-medium text-orange-900">Claim Ownership Transfer</h4>
+                                            <p className="text-orange-700 text-sm">Enter the transfer code received from the current owner to claim ownership.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Transfer Code
+                                    </label>
+                                    <Input
+                                        placeholder="Enter transfer code received from current owner"
+                                        value={ownership.transferCode}
+                                        onChange={(e) => setOwnership(prev => ({ ...prev, transferCode: e.target.value }))}
+                                        required
+                                    />
+                                </div>
                                 <Button type="submit" variant="success">
-                                    Claim Transfer
+                                    📥 Claim Transfer
                                 </Button>
                             </form>
                         </FormSection>
