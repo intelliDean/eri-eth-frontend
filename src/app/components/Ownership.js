@@ -9,7 +9,7 @@ import {getEvents} from "../resources/getEvents.js";
 import {OWNERSHIP_ABI} from "../resources/ownership_abi.js";
 
 
-const OWNERSHIP = process.env.NEXT_PUBLIC_OWNERSHIP;
+const OWNERSHIP = process.env.NEXT_PUBLIC_OWNERSHIP || "0x0000000000000000000000000000000000000000";
 
 export default function Ownership() {
 

@@ -9,8 +9,8 @@ import { OWNERSHIP_ABI } from '../resources/ownership_abi';
 import { parseError } from '../resources/error';
 import { getEvents } from '../resources/getEvents';
 
-const AUTHENTICITY_CONTRACT = process.env.NEXT_PUBLIC_AUTHENTICITY;
-const OWNERSHIP_CONTRACT = process.env.NEXT_PUBLIC_OWNERSHIP;
+const AUTHENTICITY_CONTRACT = process.env.NEXT_PUBLIC_AUTHENTICITY || "0x0000000000000000000000000000000000000000";
+const OWNERSHIP_CONTRACT = process.env.NEXT_PUBLIC_OWNERSHIP || "0x0000000000000000000000000000000000000000";
 
 export default function UserDashboard() {
     const [wallet, setWallet] = useState({

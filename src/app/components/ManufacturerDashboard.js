@@ -9,7 +9,7 @@ import { OWNERSHIP_ABI } from '../resources/ownership_abi';
 import { signTypedData } from '../resources/typedData';
 import { parseError } from '../resources/error';
 
-const AUTHENTICITY_CONTRACT = process.env.NEXT_PUBLIC_AUTHENTICITY;
+const AUTHENTICITY_CONTRACT = process.env.NEXT_PUBLIC_AUTHENTICITY || "0x0000000000000000000000000000000000000000";
 const OWNERSHIP_CONTRACT = process.env.NEXT_PUBLIC_OWNERSHIP;
 
 export default function ManufacturerDashboard() {
